@@ -46,7 +46,7 @@ class _SudokuWidgetState extends State<SudokuWidget> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          ElevatedButton(onPressed: () => generateSudoku(), child: Icon(Icons.refresh)),
+          ElevatedButton(onPressed: () => generateSudoku(), child: const Icon(Icons.refresh)),
         ],
       ),
       backgroundColor: Colors.blueAccent,
@@ -57,10 +57,10 @@ class _SudokuWidgetState extends State<SudokuWidget> {
             children: [
               ///outer
               Container(
-                margin: EdgeInsets.all(20),
+                margin: const EdgeInsets.all(20),
                 // height: 400,
                 color: Colors.blueGrey,
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 width: double.maxFinite,
                 alignment: Alignment.center,
                 child: GridView.builder(
@@ -113,10 +113,12 @@ class _SudokuWidgetState extends State<SudokuWidget> {
                             colorText = Colors.white;
                           } else if (blokChar.isExist) {
                             colorText = Colors.red;
+                          }else if (blokChar.isGivenByUser==true && boxInner.blokChars.any((element) => element.text=="")==true) {
+                            colorText = Colors.green;
                           }
 
                           return Container(
-                            color: (boxInner.blokChars.any((element) => element.isCorrect==false)==false && boxInner.isFull==false) ? Colors.green : color,
+                            color: (boxInner.blokChars.any((element) => element.isCorrect==false)==false && boxInner.isFull==false /*&& boxInner.blokChars.any((element) => element.text=="")==false*/) ? Colors.green : color,
                             alignment: Alignment.center,
                             child: TextButton(
                               onPressed: blokChar.isDefault
@@ -136,7 +138,7 @@ class _SudokuWidgetState extends State<SudokuWidget> {
               ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   alignment: Alignment.center,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -148,19 +150,19 @@ class _SudokuWidgetState extends State<SudokuWidget> {
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
+                              const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             childAspectRatio: 1,
                             crossAxisSpacing: 5,
                             mainAxisSpacing: 5,
                           ),
-                          physics: ScrollPhysics(),
+                          physics: const ScrollPhysics(),
                           itemBuilder: (buildContext, index) {
                             return ElevatedButton(
                               onPressed: () => setInput(index + 1),
                               child: Text(
                                 "${index + 1}",
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
                               style: ButtonStyle(
                                 backgroundColor:
@@ -173,11 +175,11 @@ class _SudokuWidgetState extends State<SudokuWidget> {
                       ),
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.only(left: 10),
+                          margin: const EdgeInsets.only(left: 10),
                           child: ElevatedButton(
                             onPressed: () => setInput(null),
                             child: Container(
-                              child: Text(
+                              child: const Text(
                                 "Clear",
                                 style: TextStyle(color: Colors.black),
                               ),
@@ -266,23 +268,19 @@ class _SudokuWidgetState extends State<SudokuWidget> {
     // set input data based grid
     // or clear out data
     if (focusClass.indexBox == null) return;
-    if (boxInners[focusClass.indexBox!].blokChars[focusClass.indexChar!].text ==
-            number.toString() ||
-        number == null) {
+    if (boxInners[focusClass.indexBox!].blokChars[focusClass.indexChar!].text == number.toString() || number == null)
+    {
       boxInners.forEach((element) {
         element.clearFocus();
         element.clearExist();
       });
-      boxInners[focusClass.indexBox!]
-          .blokChars[focusClass.indexChar!]
-          .setEmpty();
+      boxInners[focusClass.indexBox!].blokChars[focusClass.indexChar!].setEmpty();
       tapBoxIndex = null;
       isFinish = false;
       showSameInputOnSameLine();
-    } else {
-      boxInners[focusClass.indexBox!]
-          .blokChars[focusClass.indexChar!]
-          .setText("$number");
+    }
+    else {
+      boxInners[focusClass.indexBox!].blokChars[focusClass.indexChar!].setText("$number");
 
       showSameInputOnSameLine();
 

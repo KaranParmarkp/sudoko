@@ -8,6 +8,7 @@ class BlokChar {
   bool isCorrect;
   bool isDefault;
   bool isExist = false;
+  bool? isGivenByUser;
 
   BlokChar(
     this.text, {
@@ -15,6 +16,7 @@ class BlokChar {
     this.isDefault = false,
     this.correctText,
     this.isCorrect = false,
+    this.isGivenByUser
   });
 
   // declare method used
@@ -23,6 +25,7 @@ class BlokChar {
   setText(String text) {
     this.text = text;
     isCorrect = isCorrectPos;
+    isGivenByUser = isCorrectPos;
   }
 
   setEmpty() {
