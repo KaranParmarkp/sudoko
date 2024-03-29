@@ -4,8 +4,8 @@ import 'package:sudoku/blokChar.dart';
 class BoxInner {
   late int index;
   List<BlokChar> blokChars = List<BlokChar>.from([]);
-
-  BoxInner(this.index, this.blokChars);
+  bool isFull;
+  BoxInner(this.index, this.blokChars,{this.isFull=false});
 
   // declare method used
   setFocus(int index, Direction direction) {

@@ -46,8 +46,7 @@ class _SudokuWidgetState extends State<SudokuWidget> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          ElevatedButton(
-              onPressed: () => generateSudoku(), child: Icon(Icons.refresh)),
+          ElevatedButton(onPressed: () => generateSudoku(), child: Icon(Icons.refresh)),
         ],
       ),
       backgroundColor: Colors.blueAccent,
@@ -117,7 +116,7 @@ class _SudokuWidgetState extends State<SudokuWidget> {
                           }
 
                           return Container(
-                            color: boxInner.blokChars.any((element) => element.isCorrect==false)==false ? Colors.green : color,
+                            color: (boxInner.blokChars.any((element) => element.isCorrect==false)==false && boxInner.isFull==false) ? Colors.green : color,
                             alignment: Alignment.center,
                             child: TextButton(
                               onPressed: blokChar.isDefault
@@ -207,33 +206,19 @@ class _SudokuWidgetState extends State<SudokuWidget> {
     var sudokuGenerator = SudokuGenerator(emptySquares: 5); //54
     // then we populate to get a possible combination
     // Quiver for easy populate collection using partition
-    List<List<List<int>>> completes = partition(sudokuGenerator.newSudokuSolved,
-            sqrt(sudokuGenerator.newSudoku.length).toInt())
-        .toList();
-    partition(sudokuGenerator.newSudoku,
-            sqrt(sudokuGenerator.newSudoku.length).toInt())
-        .toList()
-        .asMap()
-        .entries
-        .forEach(
+    List<List<List<int>>> completes = partition(sudokuGenerator.newSudokuSolved, sqrt(sudokuGenerator.newSudoku.length).toInt()).toList();
+    partition(sudokuGenerator.newSudoku, sqrt(sudokuGenerator.newSudoku.length).toInt()).toList().asMap().entries.forEach(
       (entry) {
-        List<int> tempListCompletes =
-            completes[entry.key].expand((element) => element).toList();
+        List<int> tempListCompletes = completes[entry.key].expand((element) => element).toList();
         List<int> tempList = entry.value.expand((element) => element).toList();
 
         tempList.asMap().entries.forEach((entryIn) {
-          int index =
-              entry.key * sqrt(sudokuGenerator.newSudoku.length).toInt() +
-                  (entryIn.key % 9).toInt() ~/ 3;
+          int index = entry.key * sqrt(sudokuGenerator.newSudoku.length).toInt() + (entryIn.key % 9).toInt() ~/ 3;
 
-          if (boxInners.where((element) => element.index == index).length ==
-              0) {
+          if (boxInners.where((element) => element.index == index).length == 0) {
             boxInners.add(BoxInner(index, []));
           }
-
-          BoxInner boxInner =
-              boxInners.where((element) => element.index == index).first;
-
+          BoxInner boxInner = boxInners.where((element) => element.index == index).first;
           boxInner.blokChars.add(BlokChar(
             entryIn.value == 0 ? "" : entryIn.value.toString(),
             index: boxInner.blokChars.length,
@@ -241,10 +226,17 @@ class _SudokuWidgetState extends State<SudokuWidget> {
             isCorrect: entryIn.value != 0,
             correctText: tempListCompletes[entryIn.key].toString(),
           ));
+
         });
       },
     );
-
+    boxInners.forEach((box) {
+      if(box.blokChars.any((blok) => blok.text=="")==true){
+        box.isFull=false;
+      }else{
+        box.isFull=true;
+      }
+    });
     // complte generate puzzle sudoku
   }
 
